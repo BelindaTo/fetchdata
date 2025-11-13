@@ -1,0 +1,674 @@
+:root{
+  --ink: #0f1a2b;
+  --sand: pink;
+  --panel: #fff;
+  --add-col: 240px;   /* width of the left Add column */
+  --card-w:  240px;   /* book card width */
+  --card-h:  360px;   /* book card height */
+  --gap:       24px;  /* spacing */
+  --cols:         5;  /* number of book columns to the right */
+}
+
+/* base */
+html, body, #root { margin:0; padding:0; width:100%; min-height:100%; }
+body { background:#fff; color:var(--ink); font-family: system-ui, -apple-system, Segoe UI, Roboto, Inter, Arial, sans-serif; overflow-x:hidden; }
+
+/* chrome */
+.app { min-height:100vh; display:flex; flex-direction:column; width:100%; }
+.header, .footer { width:100%; box-sizing:border-box; }
+.header { background:var(--sand); border-bottom:4px solid var(--ink); text-align:center; padding:28px 16px; }
+.header h1 { margin:0; font-size:36px; font-weight:800; letter-spacing:.5px; }
+.footer { background:var(--ink); color:#e6eaf0; text-align:center; padding:14px 12px; }
+
+/* content */
+.main {
+  position: relative;              /* key: anchor for absolute children */
+  padding: 72px 16px 40px;         /* ↑ room for the button row */
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-sizing: border-box;
+  width: 100%;
+}
+
+
+/* Filters section */
+.filters {
+  width: 100%;
+  max-width: calc(
+    var(--add-col) + var(--gap) +
+    (var(--cols) * var(--card-w)) + ((var(--cols) - 1) * var(--gap))
+  );
+  margin: 0 auto 24px;
+  padding: 16px 20px;
+  background: var(--panel);
+  border-radius: 8px;
+  border: 2px solid #e5e7eb;
+  box-sizing: border-box;
+  position: relative;
+  z-index: 10;
+}
+
+.filters h3 {
+  margin: 0 0 12px;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.filter-controls {
+  display: flex;
+  gap: 16px;
+  align-items: flex-end;
+  flex-wrap: wrap;
+}
+
+.filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  position: relative;
+  z-index: 10;
+}
+
+.filter-group label {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.filter-group select {
+  padding: 10px 32px 10px 12px;
+  border: 2px solid #d7dbe2;
+  border-radius: 8px;
+  font-size: 14px;
+  min-width: 180px;
+  background: white;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230f1a2b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 8px center;
+  background-size: 20px;
+  pointer-events: auto;
+}
+
+.filter-group select:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background-color: #f9fafb;
+}
+
+.filter-group select:focus {
+  outline: none;
+  border-color: var(--sand);
+}
+
+.btn-clear {
+  padding: 10px 14px;
+  border: 2px solid #d7dbe2;
+  border-radius: 8px;
+  background: #f4f6f8;
+  color: var(--ink);
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  height: 42px;
+}
+
+.btn-clear:hover {
+  background: #e5eaf0;
+}
+
+/* Main catalog grid - dedicated column for Add button */
+.catalog-grid {
+  display: grid;
+  grid-template-columns: var(--add-col) repeat(var(--cols), var(--card-w));
+  grid-auto-rows: var(--card-h);
+  gap: var(--gap);
+  width: calc(
+    var(--add-col) + var(--gap) +
+    (var(--cols) * var(--card-w)) + ((var(--cols) - 1) * var(--gap))
+  );
+  margin: 0 auto;
+  align-items: start;
+  justify-content: center;
+}
+
+/* Controls column - contains Add button and control buttons */
+.catalog-grid .controls-column {
+  grid-column: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap);
+  width: var(--add-col);
+}
+
+/* Controls row - contains Update and Delete buttons stacked vertically */
+.controls-row {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+}
+
+.controls-row .btn {
+  width: 100%;
+  height: 56px;
+  font-weight: 800;
+  border: 3px solid #d7dbe2;
+  border-radius: 8px;
+  background: var(--panel);
+  cursor: pointer;
+  font-size: 16px;
+  color: #111;
+}
+
+.controls-row .btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.controls-row .btn-danger {
+  background: #1f2937;
+  color: #fff;
+  border-color: #1f2937;
+}
+
+.controls-row .btn:hover:not(:disabled) {
+  background: #f4f6f8;
+}
+
+.controls-row .btn-danger:hover:not(:disabled) {
+  background: #111827;
+}
+
+/* ---------- Books start after the controls column ---------- */
+/* Books are positioned starting from column 2 */
+.catalog-grid .book-card {
+  /* Grid positioning handled automatically by grid-auto-flow */
+}
+
+/* Cards must match the track size */
+.book-card,
+.add-card {
+  width: var(--card-w);
+  /* let the card grow, but keep a minimum height */
+  min-height: var(--card-h);
+  box-sizing: border-box;
+  border-radius: 8px;
+  border: 3px solid #d7dbe2;
+  background: var(--panel);
+  /* allow extra content instead of cutting it off */
+  overflow-y: auto;      /* card can scroll if it gets really tall */
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  color: #111;
+  position: relative;
+  cursor: pointer;
+}
+
+
+/* selection indicator */
+.book-card.selected {
+  border-color: hotpink;
+  background: #ffeef7;
+  box-shadow: 0 0 0 4px rgba(255, 105, 180, 0.2);
+}
+
+/* add button card */
+.add-card {
+  background:#f4f6f8;
+  color:#6b7280;
+  font-size:28px;
+  font-weight:800;
+  display:flex; 
+  align-items:center; 
+  justify-content:center;
+  cursor:pointer;
+}
+.add-card:hover { 
+  background:pink; 
+  color:#fff; 
+  border-color:pink; 
+}
+
+/* book content */
+.book-image { 
+  height:220px; 
+  display:flex; 
+  align-items:center; 
+  justify-content:center; 
+  background:#f3f4f6; 
+}
+
+.book-image img { 
+  width:180px; 
+  height:220px; 
+  object-fit:contain; 
+}
+
+.book-meta { 
+  display:flex; 
+  flex-direction:column; 
+  justify-content:space-between; 
+  flex:1;
+  padding: 12px;
+}
+
+.book-meta h3 {
+  margin: 0 0 8px;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.book-meta .author {
+  margin: 0 0 8px;
+  font-size: 14px;
+  font-style: italic;
+  color: #6b7280;
+}
+
+.book-meta .publisher,
+.book-meta .language {
+  margin: 0 0 6px;
+  font-size: 13px;
+  color: #4b5563;
+}
+
+.book-price {
+  min-height: 52px;
+  display:flex; 
+  align-items:center; 
+  justify-content:center;
+  text-align:center; 
+  padding:10px 12px; 
+  color:#111; 
+  font-size:16px; 
+  font-weight:700;
+}
+
+.book-link {
+  display: inline-block;
+  margin-top: auto;
+  padding: 8px 0;
+  color: var(--ink);
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 600;
+  text-align: center;
+  border-top: 2px solid #e5e7eb;
+}
+
+.book-link:hover {
+  color: var(--sand);
+}
+
+.learn-more, .view-button {
+  width:100%; 
+  border:0; 
+  background:var(--ink); 
+  color:#fff; 
+  padding:10px 0; 
+  font-weight:800; 
+  cursor:pointer; 
+  text-align:center;
+}
+
+.learn-more:hover { 
+  color:pink; 
+}
+
+/* modal */
+.modal-backdrop {
+  position: fixed; 
+  inset: 0;
+  background: rgba(0,0,0,.45);
+  display:flex; 
+  align-items:center; 
+  justify-content:center;
+  z-index: 50;
+}
+
+.modal {
+  width: 560px; 
+  max-width: calc(100vw - 32px);
+  background: #fff; 
+  border-radius: 12px; 
+  border: 3px solid #d7dbe2;
+  box-shadow: 0 20px 60px rgba(0,0,0,.25);
+}
+
+.modal-header { 
+  padding: 16px 20px; 
+  border-bottom: 2px solid #e5e7eb;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.modal-header h2 { 
+  margin: 0; 
+  font-size: 20px; 
+}
+
+.modal-close {
+  background: none;
+  border: none;
+  font-size: 28px;
+  color: #6b7280;
+  cursor: pointer;
+  line-height: 1;
+  padding: 0;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-close:hover {
+  color: var(--ink);
+}
+
+.modal-body { 
+  padding: 16px 20px 20px; 
+}
+
+/* form */
+.book-form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.book-form .form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px 16px;
+}
+
+.book-form .form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.book-form label { 
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.book-form input,
+.book-form select {
+  padding: 10px 12px;
+  border: 2px solid #d7dbe2; 
+  border-radius: 8px;
+  font-size: 14px;
+  background: white;
+  color: var(--ink);
+}
+
+.book-form select {
+  padding: 10px 32px 10px 12px;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230f1a2b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 8px center;
+  background-size: 20px;
+  cursor: pointer;
+}
+
+.book-form input:focus,
+.book-form select:focus {
+  outline: none;
+  border-color: var(--sand);
+}
+
+.book-form input:required {
+  border-color: #d7dbe2;
+}
+
+.form-actions,
+.modal-actions {
+  display:flex; 
+  justify-content:flex-end; 
+  gap: 10px; 
+  margin-top: 16px;
+}
+
+.btn-primary, .btn-secondary {
+  padding: 10px 14px;
+  border-radius: 8px;
+  border: 0;
+  font-weight: 700;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.btn-primary { 
+  background: var(--ink); 
+  color: #fff; 
+}
+
+.btn-primary:hover { 
+  filter: brightness(0.9); 
+}
+
+.btn-secondary { 
+  background: #eef2f7; 
+  color: #111; 
+}
+
+.btn-secondary:hover { 
+  background: #e5eaf0; 
+}
+
+
+/* Overlay bar that doesn't affect layout */
+.loan-button-container {
+  position: absolute;
+  top: 16px;                       /* distance from top of the white area */
+  left: 0;
+  right: 0;                        /* allow centering with margin auto */
+  z-index: 20;
+
+  /* match your filters/grid width */
+  max-width: calc(
+    var(--add-col) + var(--gap) +
+    (var(--cols) * var(--card-w)) + ((var(--cols) - 1) * var(--gap))
+  );
+  margin: 0 auto;                  /* center the container */
+  display: flex;
+  justify-content: flex-start;     /* align button to the left edge */
+  padding-left: 4px;               /* a bit of spacing from the edge */
+  box-sizing: border-box;
+}
+
+/* Button styling */
+.loan-management-btn {
+  background: #fff;
+  color: #111;
+  border: 3px solid pink;
+  border-radius: 10px;
+  padding: 10px 16px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: background .2s ease, color .2s ease, border-color .2s ease;
+}
+.loan-management-btn:hover {
+  background: pink;
+  color: #fff;
+  border-color: pink;
+}
+
+
+
+
+/* The close (X) button styling */
+.close-loans-btn {
+  background: #111;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 14px;
+  font-size: 18px;
+  font-weight: 800;
+  cursor: pointer;
+  margin-left: 4px;  
+  margin-bottom: 20px; 
+}
+
+.close-loans-btn:hover {
+  background: pink;
+}
+
+
+
+@media (max-width: 680px) {
+  :root { --cols: 2; }
+  .catalog-wrap { 
+    grid-template-columns: 1fr; 
+    width: auto; 
+  }
+  .books-grid { 
+    width: auto; 
+    justify-content: center; 
+  }
+  .filter-controls {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .filter-group select {
+    min-width: 100%;
+  }
+}
+.book-details-view {
+  width: 100%;
+  max-width: 1100px;
+  background: #fff;
+  border: 2px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 20px 20px 28px;
+  box-sizing: border-box;
+  position: relative;
+}
+
+.close-details-btn {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  background: #111;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 6px 12px;
+  font-size: 18px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.close-details-btn:hover {
+  background: pink;
+}
+
+.book-details-top {
+  display: flex;
+  gap: 24px;
+  align-items: flex-start;
+  margin-top: 18px;
+  margin-bottom: 32px;
+}
+
+.book-details-image {
+  width: 240px;
+  min-height: 320px;
+  background: #f3f4f6;
+  border: 2px solid #e5e7eb;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.book-details-image img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.book-details-meta h2 {
+  margin-top: 0;
+  margin-bottom: 12px;
+  font-size: 28px;
+}
+
+.book-details-meta p {
+  margin: 4px 0;
+  font-size: 15px;
+}
+
+.book-details-similar h3 {
+  margin-bottom: 14px;
+}
+
+.similar-books-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 16px;
+}
+
+.similar-book-card {
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  background: #fff;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-height: 210px;
+}
+
+.similar-book-img-wrap {
+  background: #f9fafb;
+  height: 150px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.similar-book-img-wrap img {
+  max-width: 90%;
+  max-height: 90%;
+  object-fit: contain;
+}
+
+.similar-book-info {
+  padding: 8px 10px 12px;
+}
+
+.similar-book-title {
+  font-weight: 600;
+  font-size: 14px;
+  margin: 0 0 4px;
+}
+
+.similar-book-subtitle {
+  font-size: 12px;
+  color: #6b7280;
+  margin: 0;
+}
+
+.error {
+  color: #b91c1c;
+  font-weight: 600;
+}
